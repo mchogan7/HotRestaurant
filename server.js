@@ -41,7 +41,7 @@ function checkOpenTable() {
 
 
 app.get('/', function (req, res) {
-  res.send('{Hello World}');
+  res.sendFile(path.join(__dirname, "index.html"));
 });
 
 // app.listen(3000);
@@ -64,3 +64,5 @@ app.get("/api/tables", function (req, res) {
 app.listen(PORT, function() {
   console.log("App listening on PORT " + PORT);
 });
+
+
