@@ -23,20 +23,6 @@ var connection = mysql.createConnection({
     database: "hotrestaurant_db"
 });
 
-// checkOpenTable()
-
-function checkOpenTable() {
-    connection.query('SELECT * FROM alltables WHERE available = TRUE LIMIT 1', function(error, results, fields) {
-        if (error) throw error
-        if (results) {
-            console.log(results)
-        } else {
-            //Send this info back to page.
-            console.log('No Tables')
-        }
-	});
-}
-
 ////////////         ROUTES        ////////////////////
 
 
@@ -62,14 +48,15 @@ app.post("/api/new", function(req, res) {
   // req.body hosts is equal to the JSON post sent from the user
   var newReservation = req.body;
 
-  console.log(newReservation);
+  // console.log(newReservation);
 
 // connection.query("UPDATE alltables SET ? WHERE ?", function(err, res) { });
 
 connection.connect(function(err) {
-	if (err) throw err;
+
 });
-  // We then display the JSON to the users
+checkOpenTable(newReservation)
+
   res.json(newReservation);
 });
 // Listener
@@ -77,5 +64,26 @@ connection.connect(function(err) {
 app.listen(PORT, function() {
   console.log("App listening on PORT " + PORT);
 });
+
+
+function checkOpenTable(resObject) {
+    connection.query('SELECT * FROM alltables WHERE available = 1 LIMIT 1', function(error, results, fields) {
+    	console.log(results)
+      	if (results.length > 0) {
+            reserveTable(results[0].table_id, resObject)
+        } else {
+            //Send this info back to page.
+            console.log('No Tables')
+        }
+	});
+}
+
+function reserveTable(tableID, resObject){
+	console.log(tableID)
+	console.log(resObject)
+connection.query('UPDATE hotrestaurant_db.alltables SET reserve_name = ?, available = 0, email = ?, phone = ?, reserve_id = ? WHERE table_id = ?', [resObject.customerName, resObject.customerEmail, resObject.phoneNumber, resObject.customerID, tableID], function(error, results, fields) {
+    });
+}
+
 
 
