@@ -10,15 +10,15 @@ app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.text());
 app.use(bodyParser.json({ type: "application/vnd.api+json" }));
 
-/* 
+/*
 ========================================================
 ////////////         ROUTES        ////////////////////
 ========================================================
 */
 app.get('/', function (req, res) {
-  res.send('{Hello World}')
-})
- 
+  res.send('{Hello World}');
+});
+
 // app.listen(3000);
 
 app.get("/tables", function (req, res) {

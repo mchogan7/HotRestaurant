@@ -58,7 +58,10 @@
 	</div>
 	<script type="text/javascript">
 			$(document).ready(function(){
-
+				$.get("/tables", function(data) {
+					console.log(data);
+						
+				});
 			});
 	</script>
 
