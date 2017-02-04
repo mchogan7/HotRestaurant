@@ -23,7 +23,7 @@ var connection = mysql.createConnection({
     database: "hotrestaurant_db"
 });
 
-checkOpenTable()
+// checkOpenTable()
 
 function checkOpenTable() {
     connection.query('SELECT * FROM alltables WHERE available = TRUE LIMIT 1', function(error, results, fields) {
@@ -58,7 +58,20 @@ app.get("/api/tables", function (req, res) {
 	res.sendFile(path.join(__dirname, "reserve.html"));
 });
 
+app.post("/api/new", function(req, res) {
+  // req.body hosts is equal to the JSON post sent from the user
+  var newReservation = req.body;
 
+  console.log(newReservation);
+
+// connection.query("UPDATE alltables SET ? WHERE ?", function(err, res) { });
+
+connection.connect(function(err) {
+	if (err) throw err;
+});
+  // We then display the JSON to the users
+  res.json(newReservation);
+});
 // Listener
 // ===========================================================
 app.listen(PORT, function() {
