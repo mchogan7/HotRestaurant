@@ -11,6 +11,8 @@ app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.text());
 app.use(bodyParser.json({ type: "application/vnd.api+json" }));
 
+app.use(express.static(path.join(__dirname,'assets')));
+
 var connection = mysql.createConnection({
     host: "localhost",
     port: 3306,
@@ -36,12 +38,20 @@ app.get("/tables", function (req, res) {
 	res.sendFile(path.join(__dirname, "tables.html"));
 });
 
+// app.get("/frontEnd.js", function(req, res) {
+//   res.sendFile(path.join(__dirname, "assets/frontEnd.js"));	
+// });
+
 app.get("/reserve", function (req, res) {
 	res.sendFile(path.join(__dirname, "reserve.html"));
 });
 
 app.get("/api/tables", function (req, res) {
 	res.sendFile(path.join(__dirname, "reserve.html"));
+});
+
+app.get("/api/allTables", function (req, res) {
+	sendAll(res);
 });
 
 app.post("/api/new", function(req, res) {
@@ -73,7 +83,8 @@ function checkOpenTable(resObject) {
             reserveTable(results[0].table_id, resObject)
         } else {
             //Send this info back to page.
-            console.log('No Tables')
+            console.log('Wait Listed!')
+            reserveTable(results.length, resObject)
         }
 	});
 }
@@ -83,6 +94,12 @@ function reserveTable(tableID, resObject){
 	console.log(resObject)
 connection.query('UPDATE hotrestaurant_db.alltables SET reserve_name = ?, available = 0, email = ?, phone = ?, reserve_id = ? WHERE table_id = ?', [resObject.customerName, resObject.customerEmail, resObject.phoneNumber, resObject.customerID, tableID], function(error, results, fields) {
     });
+}
+
+function sendAll(res){
+	    connection.query('SELECT * FROM alltables', function(error, results, fields) {
+    	res.json(results);
+	})
 }
 
 
